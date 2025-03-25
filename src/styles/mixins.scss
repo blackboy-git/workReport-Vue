@@ -1,0 +1,45 @@
+// 按钮样式混合
+@mixin button-style($bg-color, $text-color, $hover-bg-color, $hover-text-color) {
+    background-color: $bg-color;
+    color: $text-color;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+  
+    &:hover {
+      background-color: $hover-bg-color;
+      color: $hover-text-color;
+    }
+  }
+  
+  // 输入框样式混合
+  @mixin input-style($border-color, $focus-border-color) {
+    border: 1px solid $border-color;
+    border-radius: 4px;
+    padding: 8px 12px;
+    width: 100%;
+    transition: border-color 0.3s;
+  
+    &:focus {
+      border-color: $focus-border-color;
+      outline: none;
+    }
+  }
+  
+  // 响应式布局混合
+  @mixin responsive($breakpoint) {
+    @media (max-width: $breakpoint) {
+      @content;
+    }
+  }
+  
+  // 卡片样式混合
+  @mixin card-style($bg-color, $border-color, $border-radius) {
+    background-color: $bg-color;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+  }
