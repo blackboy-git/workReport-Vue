@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import { getUserAvatar } from '@/api/user'; // 假设这是获取头像的 API 函数
 
 export const useUserStore = defineStore('user', () => {
   // 模拟菜单数据，添加 roles 字段
@@ -14,14 +15,18 @@ export const useUserStore = defineStore('user', () => {
 
   // 状态
   const token = ref(''); // 模拟 token
-  const userInfo = ref('');
+  const userInfo = ref({
+    avatar: '', // 存储头像标识
+    avatarUrl: '' // 存储头像 URL
+  });
   const isLoggedIn = ref(true); // 默认为已登录
   const role = ref('USER'); // 新增用户角色信息，默认为 USER
 
-  const setUserInfo = (data) => {
+  const setUserInfo = async (data) => {
     userInfo.value = { ...data };
     isLoggedIn.value = true;
     role.value = data.role || 'USER'; // 从用户信息中获取角色
+    await fetchAvatar(); // 初始化头像 URL
   };
 
   // 模拟周报数据
@@ -65,11 +70,27 @@ export const useUserStore = defineStore('user', () => {
       // 模拟登出成功
       console.log('登出成功');
       token.value = '';
-      userInfo.value = null;
+      userInfo.value = {
+        avatar: '',
+        avatarUrl: ''
+      };
       isLoggedIn.value = false;
       role.value = 'USER';
     } catch (error) {
       console.error('登出失败:', error);
+    }
+  }
+
+  // 获取头像 URL
+  async function fetchAvatar() {
+    try {
+      if (userInfo.value.avatar) {
+        const url = await getUserAvatar(userInfo.value.avatar);
+        userInfo.value.avatarUrl = url;
+      }
+    } catch (error) {
+      console.error('获取用户头像失败:', error);
+      userInfo.value.avatarUrl = '';
     }
   }
 
@@ -89,9 +110,9 @@ export const useUserStore = defineStore('user', () => {
     reports,
     teamReports,
     teamMembers, // 暴露 teamMembers
-    role
+    role,
+    fetchAvatar // 暴露 fetchAvatar 方法
   };
 }, {
   persist: true // 启用持久化
 });
-    

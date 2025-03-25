@@ -106,7 +106,7 @@ onMounted(() => {
   }
 });
 
-const handleLogin = () => {
+const handleLogin = async () => {
   loginFormRef.value.validate(async (valid) => {
     if (!valid) return;
 
@@ -127,9 +127,7 @@ const handleLogin = () => {
         const userStore = useUserStore();
         // 假设 response.data.data 包含 token 和用户信息
         const userInfo = response.data.data;
-        console.log("接收到的user：", userInfo);
-        // console.log("接收到的user：", userInfo);
-        userStore.setUserInfo(userInfo); // 调用 store 的方法保存用户信息
+        await userStore.setUserInfo(userInfo); // 调用 store 的方法保存用户信息
 
         ElMessage.success('登录成功');
         router.push('/'); // 跳转到嵌套在 MainLayout 下的首页

@@ -19,9 +19,9 @@
                     <el-button size="middle" type="primary">上传头像</el-button>
                   </el-upload>
                 </div>
-                <!-- 合并预览和实际头像展示 -->
+                <!-- 合并预览和实际头像展示，使用 userStore.userInfo.avatarUrl 显示头像 -->
                 <img
-                  :src="previewAvatarUrl || newAvatar || 'src/components/icons/defaultHead.png'"
+                  :src="previewAvatarUrl || userStore.userInfo.avatarUrl || 'src/components/icons/defaultHead.png'"
                   alt="头像"
                   class="avatar"
                 />
@@ -141,7 +141,7 @@ const passwordRules = reactive({
 // 在组件挂载时从 userStore 中获取用户姓名并赋值给 formData.newUserName
 onMounted(() => {
   formData.newUserName = userStore.userInfo.userName;
-  newAvatar.value = userStore.userInfo.avatar;
+  // 不需要再设置 newAvatar，因为头像显示使用 userStore.userInfo.avatarUrl
 });
 
 const handleClick = (tab, event) => {
@@ -178,6 +178,8 @@ const handleAvatarUploadSuccess = (response) => {
   if (response.data.flag) {
     newAvatar.value = response.data.data;
     userStore.userInfo.avatar = newFileName.value;
+    // 上传成功后，更新头像 URL
+    userStore.fetchAvatar();
     ElMessage.success(response.data.msg);
   } else {
     ElMessage.error(response.data.msg || '头像上传失败');
@@ -185,7 +187,6 @@ const handleAvatarUploadSuccess = (response) => {
 };
 
 const submitForm = async () => {
-  console.log('提交表单时 newUserName 的值:', formData.newUserName);
   formRef.value.validate(async (valid) => {
     if (!valid) return;
     try {
@@ -292,4 +293,4 @@ const clearPassword = () => {
 .center-button .el-button {
   width: 100px;
 }
-</style>        
+</style>

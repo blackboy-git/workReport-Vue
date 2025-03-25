@@ -21,7 +21,7 @@
         <el-col :span="6" v-for="(report, index) in displayReports" :key="index">
           <el-card class="reports_card" style="max-width: 480px">
             <template #header>
-              <el-tooltip placement="top" popper-class="custom-tooltip">
+              <el-tooltip placement="top" popper-class="custom-tooltip" disabled="true">
                 <template #content> {{ report.reportName }} </template>
                 <div class="card-header">
                   <span>{{ report.reportName }}</span>
