@@ -17,28 +17,29 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
-    meta: { requiresAuth: false }, // 不需要登录
+    meta: { requiresAuth: false, label: '登录页' }, // 不需要登录，添加标签信息
   },
   {
     path: '/',
     component: () => import('@/components/layout/MainLayout.vue'), // 主布局
     children: [
-      { path: '', name: 'Home', component: Home }, // 首页
-      { path: 'my-reports', name: 'MyReports', component: MyReports, meta: { requiresAuth: true } },
-      { path: 'team-reports', name: 'TeamReports', component: TeamReports, meta: { requiresAuth: true } }, // 组内周报路由
-      { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true } },
-      { path: 'userManagement', name: 'UserManagement', component: UserManagement, meta: { requiresAuth: true } },
-      { path: 'icon-test', name: 'IconTest', component: IconTest, meta: { requiresAuth: false } }, // 图标测试页路由
-      { path: 'user-info-settings', name: 'UserInfoSettings', component: UserInfoSettings, meta: { requiresAuth: true } }, // 新增：修改用户信息路由
-      { path: 'password-settings', name: 'PasswordSettings', component: PasswordSettings, meta: { requiresAuth: true } }, // 新增：修改用户密码路由
-      { path: 'group-management', name: 'GroupManagement', component: GroupManagement, meta: { requiresAuth: true } }, // 新增：分组管理路由
+      { path: '', name: 'Home', component: Home, meta: { requiresAuth: true, label: '首页' } }, // 首页，添加标签信息
+      { path: 'my-reports', name: 'MyReports', component: MyReports, meta: { requiresAuth: true, label: '我的周报' } },
+      { path: 'team-reports', name: 'TeamReports', component: TeamReports, meta: { requiresAuth: true, label: '组内周报' } }, // 组内周报路由，添加标签信息
+      { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true, label: '个人设置' } },
+      { path: 'userManagement', name: 'UserManagement', component: UserManagement, meta: { requiresAuth: true, label: '用户管理' } },
+      { path: 'icon-test', name: 'IconTest', component: IconTest, meta: { requiresAuth: false, label: '图标测试页' } }, // 图标测试页路由，添加标签信息
+      { path: 'user-info-settings', name: 'UserInfoSettings', component: UserInfoSettings, meta: { requiresAuth: true, label: '用户信息设置' } }, // 新增：修改用户信息路由，添加标签信息
+      { path: 'password-settings', name: 'PasswordSettings', component: PasswordSettings, meta: { requiresAuth: true, label: '密码设置' } }, // 新增：修改用户密码路由，添加标签信息
+      { path: 'group-management', name: 'GroupManagement', component: GroupManagement, meta: { requiresAuth: true, label: '分组管理' } }, // 新增：分组管理路由，添加标签信息
       { 
         path: 'weekly-report-detail/:reportId/:groupName/:reportName', // 包含动态参数
         name: 'WeeklyReportDetail',
         component: WeeklyReportDetail,
         meta: { 
           requiresAuth: true,
-          layout: null // 不使用布局
+          layout: null, // 不使用布局
+          label: '周报详情' // 添加标签信息
         },
       } 
     ]
@@ -69,6 +70,4 @@ router.beforeEach((to, from, next) => {
 
 });
 
-
-
-export default router;        
+export default router;

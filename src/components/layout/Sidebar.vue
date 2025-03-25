@@ -1,6 +1,5 @@
 <template>
   <aside class="sidebar">
-
     <el-scrollbar>
       <el-menu
         :default-active="activeMenu"
@@ -11,6 +10,7 @@
           v-for="item in menuList"
           :key="item.path"
           :item="item"
+          @click="handleMenuItemClick(item)"
         />
       </el-menu>
     </el-scrollbar>
@@ -18,13 +18,14 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import MenuItem from './MenuItem.vue';
 
 const route = useRoute();
 const userStore = useUserStore();
+const emits = defineEmits(['menu-click']);
 
 const activeMenu = computed(() => {
   const { path } = route;
@@ -34,6 +35,10 @@ const activeMenu = computed(() => {
 const menuList = computed(() => {
   return userStore.getMenuList;
 });
+
+const handleMenuItemClick = (menuItem) => {
+  emits('menu-click', menuItem);
+};
 </script>
 
 <style lang="scss" scoped>

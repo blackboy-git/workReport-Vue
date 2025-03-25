@@ -1,16 +1,59 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { getUserAvatar } from '@/api/user'; // 假设这是获取头像的 API 函数
+// 引入需要的组件
+import Home from '@/views/Home.vue';
+import MyReports from '@/views/MyReports.vue';
+import TeamReports from '@/views/TeamReports.vue';
+import Settings from '@/views/Settings.vue';
+import UserManagement from '@/views/UserManagement.vue';
+import GroupManagement from '@/views/GroupManagement.vue';
 
 export const useUserStore = defineStore('user', () => {
   // 模拟菜单数据，添加 roles 字段
   const menuList = ref([
-    { path: '/', name: '首页', roles: [ 'ADMIN', 'USER'] },
-    { path: '/my-reports', name: '我的周报', roles: ['USER', 'ADMIN'] },
-    { path: '/team-reports', name: '组内周报', roles: ['USER', 'ADMIN'] },
-    { path: '/settings', name: '个人设置', roles: ['USER', 'ADMIN'] },
-    { path: '/userManagement', name: '用户管理', roles: ['ADMIN'] },
-    { path: '/group-management', name: '分组管理', roles: ['ADMIN'] },
+    { 
+      path: '/', 
+      name: '首页', 
+      label: '首页', 
+      roles: [ 'ADMIN', 'USER'],
+      component: Home
+    },
+    { 
+      path: '/my-reports', 
+      name: '我的周报', 
+      label: '我的周报', 
+      roles: ['USER', 'ADMIN'],
+      component: MyReports
+    },
+    { 
+      path: '/team-reports', 
+      name: '组内周报', 
+      label: '组内周报', 
+      roles: ['USER', 'ADMIN'],
+      component: TeamReports
+    },
+    { 
+      path: '/settings', 
+      name: '个人设置', 
+      label: '个人设置', 
+      roles: ['USER', 'ADMIN'],
+      component: Settings
+    },
+    { 
+      path: '/userManagement', 
+      name: '用户管理', 
+      label: '用户管理', 
+      roles: ['ADMIN'],
+      component: UserManagement
+    },
+    { 
+      path: '/group-management', 
+      name: '分组管理', 
+      label: '分组管理', 
+      roles: ['ADMIN'],
+      component: GroupManagement
+    },
   ]);
 
   // 状态
