@@ -8,7 +8,8 @@
       <span class="welcome">欢迎，{{ userName }} [{{role}}]  </span>
       <span class="date">{{ currentDate }}</span>
       <el-dropdown class="avatar-dropdown">
-        <img src="@/assets/avatar.png" alt="User Avatar" class="avatar" />
+        <!-- 绑定头像 URL -->
+        <img :src="userAvatarUrl" alt="User Avatar" class="avatar" />
         <template #dropdown>
           <el-dropdown-menu>
             <el-dropdown-item @click="goToSettings">个人设置</el-dropdown-item>
@@ -21,21 +22,44 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed,watch } from 'vue';
 import { useUserStore } from '@/stores/user';
 import { useRouter } from 'vue-router';
+import { getUserAvatar } from '@/api/user';
 
 const userStore = useUserStore();
 const router = useRouter();
-const userName = ref('');
-const role = ref('');
 const currentDate = ref('');
+const userAvatarUrl = ref('@/assets/avatar.png');
+
+// 使用 computed 属性获取用户名
+const userName = computed(() => userStore.userInfo.userName || '用户名');
+// 使用 computed 属性获取角色
+const role = computed(() => userStore.userInfo.role || '普通用户');
+
+const fetchAvatar = async () => {
+  const avatarId = userStore.userInfo.avatar;
+  if (avatarId) {
+    try {
+      const url = await getUserAvatar(avatarId);
+      userAvatarUrl.value = url;
+    } catch (error) {
+      console.error('获取用户头像失败:', error);
+      userAvatarUrl.value = '@/assets/avatar.png';
+    }
+  } else {
+    userAvatarUrl.value = '@/assets/avatar.png';
+  }
+};
 
 onMounted(() => {
-  userName.value = userStore.userInfo.userName || '用户名';
-  role.value = userStore.userInfo.role || '普通用户';
   updateDate();
   setInterval(updateDate, 1000);
+  fetchAvatar();
+});
+
+watch(() => userStore.userInfo.avatar, () => {
+  fetchAvatar();
 });
 
 const updateDate = () => {
@@ -77,7 +101,10 @@ const goToSettings = () => {
     }
 
     h1 {
-      font-size: 1.5rem;
+      font-family: 'Microsoft YaHei', 'SimHei', Arial, sans-serif;
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffff;
       margin: 0;
     }
   }
@@ -105,4 +132,4 @@ const goToSettings = () => {
     }
   }
 }
-</style>    
+</style>

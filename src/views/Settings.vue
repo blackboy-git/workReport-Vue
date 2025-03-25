@@ -147,15 +147,6 @@ onMounted(() => {
 const handleClick = (tab, event) => {
 };
 
-const handleAvatarUploadSuccess = (response) => {
-  if (response.data.flag) {
-    newAvatar.value = response.data.data;
-    // previewAvatarUrl.value = '';
-    ElMessage.success(response.data.msg);
-  } else {
-    ElMessage.error(response.data.msg || '头像上传失败');
-  }
-};
 
 const handleBeforeAvatarUpload = async (file) => {
   const reader = new FileReader();
@@ -183,6 +174,16 @@ const handleBeforeAvatarUpload = async (file) => {
   return false; // 阻止 el-upload 默认上传行为
 };
 
+const handleAvatarUploadSuccess = (response) => {
+  if (response.data.flag) {
+    newAvatar.value = response.data.data;
+    userStore.userInfo.avatar = newFileName.value;
+    ElMessage.success(response.data.msg);
+  } else {
+    ElMessage.error(response.data.msg || '头像上传失败');
+  }
+};
+
 const submitForm = async () => {
   console.log('提交表单时 newUserName 的值:', formData.newUserName);
   formRef.value.validate(async (valid) => {
@@ -190,6 +191,8 @@ const submitForm = async () => {
     try {
       const response = await updateUserApi(userStore.userInfo.userId, formData.newUserName, '', '', newFileName.value);
       if (response.data.flag) {
+        //更新userStore中用户姓名
+        userStore.userInfo.userName = formData.newUserName;
         ElMessage.success(response.data.msg);
       } else {
         ElMessage.error(response.data.msg || '设置保存失败');

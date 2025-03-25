@@ -128,3 +128,24 @@ export async function changeUserStatus(userId) {
         throw error;
     }
 }
+
+// 获取用户的头像图片
+export async function getUserAvatar(avatarId) {
+    try {
+        // 修改请求路径以匹配后端接口
+        const response = await api.get(`/getUserAvatar/${avatarId}`);
+        if (response.data.flag) {
+            // 假设后端返回的 Result 对象中有 success 和 data 字段
+            const base64Image = response.data.data;
+            // 构建完整的 Base64 图片 URL
+            const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+            return imageUrl;
+        } else {
+            console.error('获取用户头像失败:', response.data.message);
+            throw new Error(response.data.message);
+        }
+    } catch (error) {
+        console.error('获取用户头像失败:', error);
+        throw error;
+    }
+}    
