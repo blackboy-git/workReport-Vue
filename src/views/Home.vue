@@ -13,35 +13,38 @@
       </el-row>
     </div>
 
-    
-
     <!-- 最近4次周报信息 -->
     <div class="recent-reports">
-      <el-row>
-        <el-col :span="6" v-for="(report, index) in displayReports" :key="index">
-          <el-card class="reports_card" style="max-width: 480px">
-            <template #header>
-              <el-tooltip placement="top" popper-class="custom-tooltip" disabled="true">
-                <template #content> {{ report.reportName }} </template>
-                <div class="card-header">
-                  <span>{{ report.reportName }}</span>
+      <template v-if="isLoading">
+        <div>数据加载中，请稍候...</div>
+      </template>
+      <template v-else>
+        <el-row>
+          <el-col :span="6" v-for="(report, index) in displayReports" :key="index">
+            <el-card class="reports_card" style="max-width: 480px">
+              <template #header>
+                <el-tooltip placement="top" popper-class="custom-tooltip" disabled="true">
+                  <template #content> {{ report.reportName }} </template>
+                  <div class="card-header">
+                    <span>{{ report.reportName }}</span>
+                  </div>
+                </el-tooltip>
+              </template>
+              <el-tooltip placement="bottom"  popper-class="custom-tooltip" :disabled="disabled">
+                <template #content> 
+                  <div v-html="report.content.replace(/\n/g, '<br>')"></div>
+                </template>
+                <div class="card-content">
+                  <span>{{ report.content }}</span>
                 </div>
               </el-tooltip>
-            </template>
-            <el-tooltip placement="bottom"  popper-class="custom-tooltip" :disabled="disabled">
-              <template #content> 
-                <div v-html="report.content.replace(/\n/g, '<br>')"></div>
+              <template #footer>
+                <span>{{ report.createTime ? `创建时间: ${report.createTime}` : '' }}</span>
               </template>
-              <div class="card-content">
-                <span>{{ report.content }}</span>
-              </div>
-            </el-tooltip>
-            <template #footer>
-              <span>{{ report.createTime ? `创建时间: ${report.createTime}` : '' }}</span>
-            </template>
-          </el-card>
-        </el-col>
-      </el-row>
+            </el-card>
+          </el-col>
+        </el-row>
+      </template>
     </div>
   </div>
 </template>
@@ -61,6 +64,8 @@ const statistics = ref({
   totalCount: 0,
   unfilledCount: 0
 });
+const isLoading = ref(true); // 新增加载状态变量
+const disabled = ref(false); // 新增 disabled 变量
 
 // 模拟统计数据映射（可根据实际数据调整）
 const statList = ref([
@@ -116,11 +121,11 @@ const getStatistics = async (userId) => {
           value: statistics.value.unfilledCount,
           bgColor: '#fff1e6'
         }
-      ]
-    }else{
+      ];
+    } else {
       ElMessage.error(response.data.msg);
     }
-  }catch(error){
+  } catch (error) {
     ElMessage.error('获取数据失败，请稍后重试');
   }
 };
@@ -137,12 +142,18 @@ const getLastReports = async (userId) => {
   } catch (error) {
     ElMessage.error('获取数据失败，请稍后重试');
   }
-}
+};
 
 onMounted(async () => {
   const userId = userStore.userInfo.userId;
-  getStatistics(userId);
-  getLastReports(userId);
+  try {
+    await getStatistics(userId);
+    await getLastReports(userId);
+  } catch (error) {
+    console.error('数据加载出错:', error);
+  } finally {
+    isLoading.value = false; // 数据加载完成，关闭加载状态
+  }
 });
 </script>
 
@@ -204,6 +215,4 @@ onMounted(async () => {
   word-wrap: break-word;
   white-space: pre-wrap;
 }
-
-
 </style>
