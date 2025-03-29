@@ -1,6 +1,5 @@
 <template>
   <div>
-    <h2>组内周报列表</h2>
     <!-- 筛选区域 -->
     <div class="filter-area">
       <el-select v-model="selectedYear" placeholder="选择年份" @change="filterReports">
@@ -30,7 +29,7 @@
       <el-table-column label="操作">
         <template #default="scope">
           <el-button size="small" @click="viewReport(scope.row)">查看</el-button>
-          <el-button size="small" type="danger" @click="deleteReport(scope.row.id)">删除</el-button>
+          <el-button size="small" type="danger" @click="deleteReport(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -40,9 +39,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { getAllGroupWeeklyReports, updateViewCount, getGroupNames, deleteGroupWeeklyReport } from '@/api/groupWeeklyReport';
+import { getAllGroupWeeklyReports, updateViewCount, deleteGroupWeeklyReport } from '@/api/groupWeeklyReport';
 import { getGroups } from '@/api/groupManagement';
-import { ElMessage } from 'element-plus';
+import { ElMessage,ElMessageBox } from 'element-plus';
 
 const router = useRouter();
 const groupWeeklyReports = ref([]);
@@ -86,7 +85,7 @@ const fetchGroupWeeklyReports = async () => {
       groupWeeklyReports.value = response.data.data;
     }
   } catch (error) {
-    console.error('获取分组周报列表失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -101,20 +100,22 @@ const fetchGroupNames = async () => {
       }));
     }
   } catch (error) {
-    console.error('获取分组名称列表失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
+//更新浏览次数
 const handleUpdateViewCount = async (reportId) => {
   try {
     await updateViewCount(reportId);
     // 更新浏览次数后重新获取数据
     await fetchGroupWeeklyReports();
   } catch (error) {
-    console.error('更新浏览次数失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
+//查看周报详情页
 const viewReport = async (report) => {
   try {
     // 调用更新浏览次数的接口
@@ -129,33 +130,46 @@ const viewReport = async (report) => {
     });
     window.open(route.href, '_blank');
   } catch (error) {
-    console.error('查看周报时更新浏览次数失败:', error);
-    ElMessage.error('查看周报时更新浏览次数失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
-const deleteReport = async (reportId) => {
+//删除周报
+const deleteReport = async (row) => {
   try {
-    await deleteGroupWeeklyReport(reportId);
-    ElMessage.success('删除成功');
-    await fetchGroupWeeklyReports();
-  } catch (error) {
-    console.error('删除失败:', error);
-    ElMessage.error('删除失败，请稍后重试');
+    await ElMessageBox.confirm(
+      '确定要删除周报吗？周报中所有成员的周报都将被删除！',
+      '提示',
+      {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    );
+
+    const response = await deleteGroupWeeklyReport(row.id);
+    if(response.data.flag){
+      // 更新成功后的操作，例如刷新列表
+      ElMessage.success('周报删除成功！');
+      const index = reports.value.findIndex(filteredReports => filteredReports.id === row.id);
+      if (index !== -1) {
+        filteredReports.value.splice(index, 1);
+      }
+    }
+  }catch (error) {
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
 // 筛选函数
 const filterReports = () => {
-  console.log('筛选函数触发'); 
-  // 触发筛选逻辑
+
 };
 
 // 清除筛选条件
 const clearFilters = () => {
   selectedYear.value = '';
   selectedGroupName.value = '';
-  console.log('筛选条件已清除'); 
 };
 
 onMounted(async () => {

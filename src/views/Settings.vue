@@ -159,17 +159,14 @@ const handleBeforeAvatarUpload = async (file) => {
 
   const formData = new FormData();
   formData.append('file', file);
-  const userId = userStore.userInfo.userId;
   try {
     const response = await uploadImage(formData);
     if (response.data.flag) {
       newFileName.value = response.data.data;
       handleAvatarUploadSuccess(response);
-    } else {
-      ElMessage.error(response.data.msg || '头像上传失败');
     }
   } catch (error) {
-    ElMessage.error('头像上传失败');
+    // 错误处理移至响应拦截器，此处不做处理
   }
   return false; // 阻止 el-upload 默认上传行为
 };
@@ -181,8 +178,6 @@ const handleAvatarUploadSuccess = (response) => {
     // 上传成功后，更新头像 URL
     userStore.fetchAvatar();
     ElMessage.success(response.data.msg);
-  } else {
-    ElMessage.error(response.data.msg || '头像上传失败');
   }
 };
 
@@ -195,11 +190,9 @@ const submitForm = async () => {
         //更新userStore中用户姓名
         userStore.userInfo.userName = formData.newUserName;
         ElMessage.success(response.data.msg);
-      } else {
-        ElMessage.error(response.data.msg || '设置保存失败');
       }
     } catch (error) {
-      ElMessage.error('发生错误：' + error.message);
+    // 错误处理移至响应拦截器，此处不做处理
     }
   });
 };
@@ -211,12 +204,9 @@ const savePassword = async () => {
       const response = await resetPasswordApi(userStore.userInfo.userId, passwordInfo.oldPassword, passwordInfo.newPassword);
       if (response.data.flag) {
         ElMessage.success(response.data.msg);
-      } else {
-        ElMessage.error(response.data.msg);
       }
     } catch (error) {
-      console.error('修改密码时发生错误:', error);
-      ElMessage.error('修改密码失败');
+    // 错误处理移至响应拦截器，此处不做处理
     }
   });
 };

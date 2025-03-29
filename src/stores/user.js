@@ -14,35 +14,35 @@ export const useUserStore = defineStore('user', () => {
   const menuList = ref([
     { 
       path: '/', 
-      name: '首页', 
+      name: 'Home', 
       label: '首页', 
       roles: [ 'ADMIN', 'USER'],
       component: Home
     },
     { 
       path: '/my-reports', 
-      name: '我的周报', 
+      name: 'MyReports', 
       label: '我的周报', 
       roles: ['USER', 'ADMIN'],
       component: MyReports
     },
     { 
       path: '/team-reports', 
-      name: '组内周报', 
+      name: 'TeamReports', 
       label: '组内周报', 
       roles: ['USER', 'ADMIN'],
       component: TeamReports
     },
     { 
       path: '/settings', 
-      name: '个人设置', 
+      name: 'Settings', 
       label: '个人设置', 
       roles: ['USER', 'ADMIN'],
       component: Settings
     },
     { 
       path: '/userManagement', 
-      name: '用户管理', 
+      name: 'UserManagement', 
       label: '用户管理', 
       roles: ['ADMIN'],
       component: UserManagement
@@ -57,14 +57,15 @@ export const useUserStore = defineStore('user', () => {
   ]);
 
   // 状态
-  const token = ref(''); // 模拟 token
   const userInfo = ref({
     avatar: '', // 存储头像标识
-    avatarUrl: '' // 存储头像 URL
+    avatarUrl: '', // 存储头像 URL
+    token: '' //存储用户token
   });
   const isLoggedIn = ref(true); // 默认为已登录
   const role = ref('USER'); // 新增用户角色信息，默认为 USER
 
+  //设置用户信息
   const setUserInfo = async (data) => {
     userInfo.value = { ...data };
     isLoggedIn.value = true;
@@ -72,55 +73,12 @@ export const useUserStore = defineStore('user', () => {
     await fetchAvatar(); // 初始化头像 URL
   };
 
-  // 模拟周报数据
-  const reports = ref([
-    // ... 周报数据
-  ]);
-
-  // 模拟组内周报数据
-  const teamReports = ref([
-    // ... 组内周报数据
-  ]);
-
-  // 提取团队成员姓名
-  const teamMembers = ref([
-    // ... 团队成员姓名
-  ]);
-
-  // 初始化团队成员
-  function initTeamMembers() {
-    const members = new Set();
-    teamReports.value.forEach(report => members.add(report.memberName));
-    teamMembers.value = Array.from(members);
-  }
-
   // 获取用户信息
   async function fetchUserInfo() {
     try {
-      // 模拟获取用户信息成功
-      console.log('获取用户信息成功:', userInfo.value);
-      initTeamMembers(); // 初始化团队成员
       return userInfo.value;
     } catch (error) {
-      console.error('获取用户信息失败:', error);
       return null;
-    }
-  }
-
-  // 登出
-  async function logout() {
-    try {
-      // 模拟登出成功
-      console.log('登出成功');
-      token.value = '';
-      userInfo.value = {
-        avatar: '',
-        avatarUrl: ''
-      };
-      isLoggedIn.value = false;
-      role.value = 'USER';
-    } catch (error) {
-      console.error('登出失败:', error);
     }
   }
 
@@ -132,7 +90,6 @@ export const useUserStore = defineStore('user', () => {
         userInfo.value.avatarUrl = url;
       }
     } catch (error) {
-      console.error('获取用户头像失败:', error);
       userInfo.value.avatarUrl = '';
     }
   }
@@ -142,17 +99,27 @@ export const useUserStore = defineStore('user', () => {
     return menuList.value.filter(item => item.roles.includes(role.value));
   });
 
+  // 登出系统
+  async function logout() {
+    try {
+      userInfo.value = {
+        avatar: '',
+        avatarUrl: '',
+        token: ''
+      };
+      isLoggedIn.value = false;
+    } catch (error) {
+    }
+  }
+
+
   return {
-    token,
     userInfo,
     isLoggedIn,
     setUserInfo,
     logout,
     fetchUserInfo,
     getMenuList,
-    reports,
-    teamReports,
-    teamMembers, // 暴露 teamMembers
     role,
     fetchAvatar // 暴露 fetchAvatar 方法
   };

@@ -26,23 +26,22 @@
 
 <script setup>
 import { ref} from 'vue';
-// 从 vue-router 中导入 useRoute
-import { useRoute } from 'vue-router'; 
+import { useRoute } from 'vue-router';
 import Banner from './Banner.vue';
 import Sidebar from './Sidebar.vue';
 import Footer from './Footer.vue';
 import TabPages from './TabPages.vue';
-import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
-const userStore = useUserStore();
 const shouldRenderLayout = route.meta.layout!== null;
 const tabPagesRef = ref(null);
 
 const handleMenuClick = (menuItem) => {
-  const { label, path, component } = menuItem;
-  tabPagesRef.value.addTab(label, path, component);
+  const { label, name, component } = menuItem;
+  tabPagesRef.value.addTab(label, name, component);
 };
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -81,4 +80,4 @@ const handleMenuClick = (menuItem) => {
   position: relative;
   // box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.05);
 }
-</style>    
+</style>

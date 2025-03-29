@@ -122,11 +122,9 @@ const getStatistics = async (userId) => {
           bgColor: '#fff1e6'
         }
       ];
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
-    ElMessage.error('获取数据失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -136,11 +134,9 @@ const getLastReports = async (userId) => {
     const response = await getRecentReports(userId);
     if (response.data.flag) {
       recentReports.value = response.data.data;
-    } else {
-      ElMessage.error(response.data.msg);
-    }
+    } 
   } catch (error) {
-    ElMessage.error('获取数据失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -150,7 +146,7 @@ onMounted(async () => {
     await getStatistics(userId);
     await getLastReports(userId);
   } catch (error) {
-    console.error('数据加载出错:', error);
+    // 错误处理移至响应拦截器，此处不做处理
   } finally {
     isLoading.value = false; // 数据加载完成，关闭加载状态
   }

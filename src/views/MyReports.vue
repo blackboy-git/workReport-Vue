@@ -1,6 +1,5 @@
 <template>
   <div class="my-reports">
-    <h2>我的周报</h2>
 
     <!-- 年份筛选 -->
     <div class="year-filter">
@@ -58,7 +57,12 @@
           <el-input v-model="editingReport.reportName" disabled />
         </el-form-item>
         <el-form-item label="周报内容">
-          <el-input v-model="editingReport.content" type="textarea" :rows="15" />
+          <div style="border: 1px solid #ccc;min-width: 365px; max-width: 100%; ">
+            <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" 
+            :defaultConfig="toolbarConfig" :mode="mode" />
+            <Editor style="height: 500px; overflow-y: hidden;" v-model="editingReport.content" 
+            :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" />
+          </div>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -72,10 +76,13 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useUserStore } from '../stores/user'; // 引入 useUserStore
+import { ref, computed, onMounted, shallowRef, onBeforeUnmount } from 'vue';
+import { useUserStore } from '../stores/user'; 
 import { ElMessage, ElMessageBox  } from 'element-plus';
-import { getMyAllReports, updateReport, deleteReport } from '@/api/weekReport'; // weekReport.js中定义了getMyWeekReports函数
+import { getMyAllReports, updateReport, deleteReport } from '@/api/weekReport'; 
+// 导入 wangeditor 富文本编辑器
+import "@wangeditor/editor/dist/css/style.css";
+import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 const userStore = useUserStore();
 
@@ -106,20 +113,69 @@ const filteredReports = computed(() => {
   });
 });
 
-// // 年份筛选
-// const filterReportsByYear = () => {
-// };
-
 // 是否显示编辑对话框
 const editDialogVisible = ref(false);
 
 // 当前编辑的周报数据
 const editingReport = ref({});
 
+// 编辑器实例引用
+const editorRef = shallowRef();
+
+const handleCreated = (editor) => {
+  editorRef.value = editor;
+};
+
+// 工具栏配置
+const toolbarConfig = {
+  toolbarKeys: [
+    "headerSelect",  // 标题选择
+    'bold', // 加粗
+    'italic', // 斜体
+    'through', // 删除线
+    'underline', // 下划线
+    'justifyCenter', // 居中对齐
+    'justifyJustify', // 两端对齐
+    'justifyLeft', // 左对齐
+    'justifyRight', // 右对齐
+    'bulletedList', // 无序列表
+    'numberedList', // 有序列表
+    'color', // 文字颜色
+    'insertLink', // 插入链接
+    'fontSize', // 字体大小
+    'lineHeight', // 行高
+    'delIndent', // 缩进
+    'indent', // 增进
+    'divider', // 分割线
+    'insertTable', // 插入表格
+    'undo', // 撤销
+    'redo', // 重做
+    'clearStyle', // 清除格式
+    'fullScreen', // 全屏
+    "blockquote", // 引用
+    "codeBlock", // 代码块
+    "insertImage", // 插入图片
+    "uploadImage", // 上传图片
+    "insertVideo", // 插入视频
+  ]
+};
+
+// wangEditor 配置
+const editorConfig = {
+  width: '100%',
+  placeholder: '请输入内容...', //初始的提示内容
+  MENU_CONF: {
+    uploadImage: {
+      server: 'https://.....',  // 图片上传接口
+      fieldName: 'file',  // 上传字段名，根据自己的接口参数配置
+    }
+  }
+};
+
 // 组件挂载时获取数据
 onMounted(async () => {
   try {
-    const userId = userStore.userInfo.userId; // 获取当前用户的用户名
+    const userId = userStore.userInfo.userId; 
     const response = await getMyAllReports(userId);
     if (response.data.flag) {
       const processedReports = response.data.data.map(report => {
@@ -127,13 +183,18 @@ onMounted(async () => {
           ...report
         };
       });
-      reports.value = processedReports; // 更新周报数据
-    } else {
-      ElMessage.error(response.data.msg);
+      reports.value = processedReports; 
     }
   } catch (error) {
-    ElMessage.error('获取周报数据失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
+});
+
+//组件销毁时同时销毁编辑器实例防止内存泄漏
+onBeforeUnmount(() => {
+  const editor = editorRef.value;
+  if(editor == null) return;
+  editor.destroy();
 });
 
 // 编辑周报
@@ -154,14 +215,10 @@ const saveEdit = async () => {
       const newResponse = await getMyAllReports(userStore.userInfo.userId);
       if (newResponse.data.flag) {
         reports.value = newResponse.data.data;
-      } else {
-        ElMessage.error(newResponse.data.msg);
       }
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
-    ElMessage.error('保存周报修改失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -186,15 +243,13 @@ const handleDelete = async (row) => {
       if (index !== -1) {
         reports.value.splice(index, 1);
       }
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
     if (error === 'cancel') {
       // 用户点击了取消按钮
       return;
     }
-    ElMessage.error('删除周报失败，请稍后重试');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -223,12 +278,6 @@ const formatReportName = (reportName) => {
   font-size: 13px;
 }
 
-h2 {
-  margin-bottom: 20px;
-  font-family: 'open sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-  font-size: 18px;
-}
-
 .year-filter {
   margin-bottom: 20px;
   display: flex;
@@ -240,8 +289,8 @@ h2 {
 }
 
 .report-content {
-  white-space: pre-line; /* 保留换行和空格 */
-  word-break: break-all; /* 长单词换行 */
+  white-space: pre-line; 
+  word-break: break-all; 
 }
 
 /* 为表格行设置自适应高度 */
@@ -265,4 +314,4 @@ h2 {
 :deep(.el-table .left-align-content) {
   text-align: left;
 }
-</style>
+</style>    

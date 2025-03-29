@@ -49,7 +49,7 @@
     </div>
 
     <div class="copyright">
-      © 2024 工作周报系统 版权所有
+      © 2024 通联世界 版权所有
     </div>
   </div>
 </template>
@@ -127,17 +127,16 @@ const handleLogin = async () => {
         const userStore = useUserStore();
         // 假设 response.data.data 包含 token 和用户信息
         const userInfo = response.data.data;
-        await userStore.setUserInfo(userInfo); // 调用 store 的方法保存用户信息
+        const token = response.data.token;
+        //将token添加到用户info中
+        userInfo.token = token; 
 
+        await userStore.setUserInfo(userInfo); // 调用 store 的方法保存用户信息
         ElMessage.success('登录成功');
         router.push('/'); // 跳转到嵌套在 MainLayout 下的首页
-      } else {
-        // 如果后端返回失败信息，抛出错误
-        console.log("错误信息是：",response.data.msg);
-        ElMessage.error(response.data.msg || '登录失败，请检查用户名和密码');
-      }
+      } 
     } catch (error) {
-      ElMessage.error(error.message || '登录失败，请检查用户名和密码');
+    // 错误处理移至响应拦截器，此处不做处理
     } finally {
       loading.value = false;
     }
@@ -152,6 +151,7 @@ const handleLogin = async () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* 修改背景图片路径 */
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 
   .login-card {
@@ -225,4 +225,4 @@ const handleLogin = async () => {
     }
   }
 }
-</style>
+</style>    

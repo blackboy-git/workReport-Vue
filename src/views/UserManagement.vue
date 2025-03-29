@@ -1,6 +1,5 @@
 <template>
   <div class="user-management">
-    <h2>用户管理</h2>
     <div class="add-user">
       <el-button type="primary" @click="openAddUserDialog">新增用户</el-button>
     </div>
@@ -140,10 +139,8 @@
 <script setup>
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
-import { useUserStore } from '../stores/user';
 import { addUserApi, updateUserApi, deleteUserApi, resetPasswordApi, getUserListApi, changeUserStatus } from '../api/user';
 
-const userStore = useUserStore();
 const users = ref([]);
 const addUserDialogVisible = ref(false);
 const editUserDialogVisible = ref(false);
@@ -239,14 +236,10 @@ const addUser = async () => {
         const newResponse = await getUserListApi();
         if (newResponse.data.flag) {
           users.value = newResponse.data.data;
-        } else {
-          ElMessage.error(newResponse.data.msg);
-        }
-      } else {
-        ElMessage.error(response.data.msg);
+        } 
       }
     } catch (error) {
-      ElMessage.error('新增用户失败');
+    // 错误处理移至响应拦截器，此处不做处理
     }
   });
 };
@@ -264,14 +257,10 @@ const updateUser = async () => {
         const newResponse = await getUserListApi();
         if (newResponse.data.flag) {
           users.value = newResponse.data.data;
-        } else {
-          ElMessage.error(newResponse.data.msg);
         }
-      } else {
-        ElMessage.error(response.data.msg);
-      }
+      } 
     } catch (error) {
-      ElMessage.error('修改用户失败');
+    // 错误处理移至响应拦截器，此处不做处理
     }
   });
 };
@@ -295,14 +284,12 @@ const deleteUser = async (userId) => {
       if (index !== -1) {
         users.value.splice(index, 1);
       }
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
     if (error === 'cancel') {
       return;
     }
-    ElMessage.error('删除用户失败');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -335,11 +322,9 @@ const confirmResetPassword = async () => {
     if (response.data.flag) {
       ElMessage.success('重置密码成功');
       resetPasswordDialogVisible.value = false;
-    } else {
-      ElMessage.error(response.data.msg);
-    }
+    } 
   } catch (error) {
-    ElMessage.error('重置密码失败');
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 
@@ -350,11 +335,9 @@ const toggleUserStatus = async (user) => {
     if (response.data.flag) {
       user.enabled =!user.enabled;
       ElMessage.success(user.enabled? '启用用户成功' : '禁用用户成功');
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
-    ElMessage.error('操作失败：' + error.message);
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 </script>
@@ -364,10 +347,6 @@ const toggleUserStatus = async (user) => {
   padding: 0px;
   width: 100%;
   box-sizing: border-box;
-}
-
-h2 {
-  margin-bottom: 20px;
 }
 
 .add-user {

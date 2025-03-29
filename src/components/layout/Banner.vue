@@ -12,7 +12,6 @@
         <img :src="userAvatarUrl" alt="User Avatar" class="avatar" />
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item @click="goToSettings">个人设置</el-dropdown-item>
             <el-dropdown-item divided @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
@@ -44,7 +43,6 @@ const fetchAvatar = async () => {
       const url = await getUserAvatar(avatarId);
       userAvatarUrl.value = url;
     } catch (error) {
-      console.error('获取用户头像失败:', error);
       userAvatarUrl.value = '@/assets/avatar.png';
     }
   } else {
@@ -72,9 +70,6 @@ const logout = () => {
   router.push('/login');
 };
 
-const goToSettings = () => {
-  router.push({ name: 'Settings' }); // 假设个人设置页面的路由名称是 'Settings'
-};
 </script>
 
 <style lang="scss" scoped>

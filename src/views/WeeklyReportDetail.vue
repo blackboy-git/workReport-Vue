@@ -41,7 +41,7 @@ const fetchReportDetail = async () => {
     }));
     memberReports.value = reportsWithGroupName;
   } else {
-    ElMessage.error(response.data.msg);
+    // 错误处理移至响应拦截器，此处不做处理
   }
 };
 

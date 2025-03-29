@@ -6,9 +6,6 @@ import TeamReports from '../views/TeamReports.vue'; // 组内周报
 import Settings from '../views/Settings.vue'; // 个人设置
 import UserManagement from '../views/UserManagement.vue';
 import { useUserStore } from '@/stores/user'; // 导入 user store
-import IconTest from '../views/IconTest.vue'; // 图标测试页
-import UserInfoSettings from '../views/UserInfoSettings.vue'; // 新增：导入修改用户信息页面
-import PasswordSettings from '../views/PasswordSettings.vue'; // 新增：导入修改用户密码页面
 import GroupManagement from '@/views/GroupManagement.vue';//导入分组管理页面
 import WeeklyReportDetail from '../views/WeeklyReportDetail.vue'; // 引入周报详情页面
 
@@ -28,9 +25,6 @@ const routes = [
       { path: 'team-reports', name: 'TeamReports', component: TeamReports, meta: { requiresAuth: true, label: '组内周报' } }, // 组内周报路由，添加标签信息
       { path: 'settings', name: 'Settings', component: Settings, meta: { requiresAuth: true, label: '个人设置' } },
       { path: 'userManagement', name: 'UserManagement', component: UserManagement, meta: { requiresAuth: true, label: '用户管理' } },
-      { path: 'icon-test', name: 'IconTest', component: IconTest, meta: { requiresAuth: false, label: '图标测试页' } }, // 图标测试页路由，添加标签信息
-      { path: 'user-info-settings', name: 'UserInfoSettings', component: UserInfoSettings, meta: { requiresAuth: true, label: '用户信息设置' } }, // 新增：修改用户信息路由，添加标签信息
-      { path: 'password-settings', name: 'PasswordSettings', component: PasswordSettings, meta: { requiresAuth: true, label: '密码设置' } }, // 新增：修改用户密码路由，添加标签信息
       { path: 'group-management', name: 'GroupManagement', component: GroupManagement, meta: { requiresAuth: true, label: '分组管理' } }, // 新增：分组管理路由，添加标签信息
       { 
         path: 'weekly-report-detail/:reportId/:groupName/:reportName', // 包含动态参数

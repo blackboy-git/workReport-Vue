@@ -1,6 +1,5 @@
 <template>
     <div class="group-management">
-        <h2>分组管理</h2>
 
         <!-- 新增分组按钮 -->
         <div class="add-group">
@@ -179,7 +178,7 @@ const fetchGroups = async () => {
             groups.value = response.data.data;
         }
     } catch (error) {
-        console.error('获取分组数据失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -209,14 +208,11 @@ const handleDelete = async (group) => {
       if (index !== -1) {
         groups.value.splice(index, 1);
       }
-    } else {
-      ElMessage.error(response.data.msg);
     }
   } catch (error) {
     if (error === 'cancel') {
       return;
     }
-    ElMessage.error('删除分组失败');
   }
 };
 
@@ -227,11 +223,9 @@ const handleTogglePlan = async (group) => {
         if(response.data.flag){
             ElMessage.success('操作成功');
             fetchGroups(); 
-        }else{
-            ElMessage.error('操作失败');
         }
     } catch (error) {
-        console.error('切换周报计划状态失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -246,7 +240,7 @@ const handleMemberManagement = async (group) => {
             await nextTick(); 
         }
     } catch (error) {
-        console.error('获取组成员数据失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -259,7 +253,7 @@ const handleAddUser = async (groupId) => {
             addUserDialogVisible.value = true;
         }
     } catch (error) {
-        console.error('获取所有用户数据失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -282,7 +276,7 @@ const handleSaveUsers = async () => {
         }
         addUserDialogVisible.value = false;
     } catch (error) {
-        console.error('添加用户到组失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -307,11 +301,9 @@ const handleSaveGroup = async () => {
                 allowDays: 0,
                 active: false
             };
-        }else{
-            ElMessage.error('新增分组失败');
         }
     } catch (error) {
-        console.error('新增分组失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -323,7 +315,7 @@ const handleSaveEditGroup = async () => {
         editGroupDialogVisible.value = false;
         fetchGroups(); 
     } catch (error) {
-        console.error('编辑分组失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -338,7 +330,7 @@ const handleDeleteUser = async (user) => {
             await nextTick(); 
         }
     } catch (error) {
-        console.error('删除用户失败:', error);
+    // 错误处理移至响应拦截器，此处不做处理
     }
 };
 
@@ -351,10 +343,6 @@ onMounted(() => {
 <style scoped>
 .group-management {
     padding: 0px;
-}
-
-h2 {
-    margin-bottom: 20px;
 }
 
 .add-group {

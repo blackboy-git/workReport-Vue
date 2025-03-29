@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref, computed, defineEmits } from 'vue';
+import { computed, defineEmits } from 'vue';
 import { useRoute } from 'vue-router';
 import { useUserStore } from '@/stores/user';
 import MenuItem from './MenuItem.vue';
