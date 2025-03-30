@@ -35,7 +35,7 @@
                   <div v-html="report.content.replace(/\n/g, '<br>')"></div>
                 </template>
                 <div class="card-content">
-                  <span>{{ report.content }}</span>
+                  <span>{{ convertHtmlToText(report.content) }}</span>
                 </div>
               </el-tooltip>
               <template #footer>
@@ -138,6 +138,17 @@ const getLastReports = async (userId) => {
   } catch (error) {
     // 错误处理移至响应拦截器，此处不做处理
   }
+};
+
+// 将 HTML 转换为纯文本并保留换行
+const convertHtmlToText = (html) => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  // 替换 <br> 标签为换行符
+  const textWithBreaks = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+  // 去除其他 HTML 标签
+  const plainText = textWithBreaks.replace(/<[^>]*>/g, '');
+  return plainText;
 };
 
 onMounted(async () => {
