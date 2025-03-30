@@ -83,7 +83,7 @@ import { useUserStore } from '../stores/user';
 import { ElMessage, ElMessageBox  } from 'element-plus';
 import { getMyAllReports, updateReport, deleteReport,getLastWeekReports } from '@/api/weekReport'; 
 // 导入 wangeditor 富文本编辑器
-import "@wangeditor/editor/dist/css/style.css";
+import "@wangeditor/editor/dist/css/style.css"
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 const userStore = useUserStore();
