@@ -87,7 +87,7 @@ const validateUserId = (rule, value, callback) => {
 };
 
 const validatePassword = (rule, value, callback) => {
-  const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
   if (!reg.test(value)) {
     return callback(new Error('密码需8位以上且包含字母和数字'));
   }

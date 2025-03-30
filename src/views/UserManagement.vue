@@ -193,7 +193,8 @@ const userRules = reactive({
     { required: true, message: '密码不能为空', trigger: 'blur' },
     {
       validator: (rule, value, callback) => {
-        const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+        // 修改后的正则表达式，允许密码包含特殊字符
+        const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
         if (!reg.test(value)) {
           return callback(new Error('密码需 8 位以上且包含字母和数字'));
         }
