@@ -45,6 +45,17 @@ export async function deleteReport(reportId) {
     }
 }
 
+//获取用户上周的周报
+export async function getLastWeekReports(userId) {
+    try {
+        const response = await api.get(`/workReport/lastWeek/${userId}`);
+        return response;
+    } catch (error) {
+        console.error('获取用户上周的周报失败:', error);
+        throw error;
+    }
+}
+
 // 获取用户最近4次周报信息
 export async function getRecentReports(userId) {
     try {

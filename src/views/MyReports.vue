@@ -23,7 +23,7 @@
       </el-table-column>
       <el-table-column prop="content" label="周报内容" width="auto" class-name="left-align-content">
         <template #default="scope">
-          <div class="report-content">{{ scope.row.content }}</div>
+          <div class="report-content">{{ convertHtmlToText(scope.row.content) }}</div>
         </template>
       </el-table-column>
       <el-table-column prop="status" label="完成状态" width="100px">
@@ -57,11 +57,13 @@
           <el-input v-model="editingReport.reportName" disabled />
         </el-form-item>
         <el-form-item label="周报内容">
+          <!-- 添加从上周获取数据模板的按钮 -->
+          <el-button class="get-last-week-report" @click="getLastWeekReportContent">从上周获取数据模板</el-button>
           <div style="border: 1px solid #ccc;min-width: 365px; max-width: 100%; ">
             <Toolbar style="border-bottom: 1px solid #ccc" :editor="editorRef" 
             :defaultConfig="toolbarConfig" :mode="mode" />
             <Editor style="height: 500px; overflow-y: hidden;" v-model="editingReport.content" 
-            :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" />
+            :defaultConfig="editorConfig" :mode="mode" @onCreated="handleCreated" @customPaste="customPaste" />
           </div>
         </el-form-item>
       </el-form>
@@ -79,12 +81,18 @@
 import { ref, computed, onMounted, shallowRef, onBeforeUnmount } from 'vue';
 import { useUserStore } from '../stores/user'; 
 import { ElMessage, ElMessageBox  } from 'element-plus';
-import { getMyAllReports, updateReport, deleteReport } from '@/api/weekReport'; 
+import { getMyAllReports, updateReport, deleteReport,getLastWeekReports } from '@/api/weekReport'; 
 // 导入 wangeditor 富文本编辑器
 import "@wangeditor/editor/dist/css/style.css";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 const userStore = useUserStore();
+
+//定义默认模板
+const defaultContent=`<p>本周已完成工作：<br>
+1. <br>
+下周工作计划：<br>
+1.<br></p>`;
 
 // 当前年份
 const currentYear = new Date().getFullYear();
@@ -147,23 +155,23 @@ const toolbarConfig = {
     'delIndent', // 缩进
     'indent', // 增进
     'divider', // 分割线
-    'insertTable', // 插入表格
+    // 'insertTable', // 插入表格
     'undo', // 撤销
     'redo', // 重做
     'clearStyle', // 清除格式
     'fullScreen', // 全屏
     "blockquote", // 引用
     "codeBlock", // 代码块
-    "insertImage", // 插入图片
-    "uploadImage", // 上传图片
-    "insertVideo", // 插入视频
+    // "insertImage", // 插入图片
+    // "uploadImage", // 上传图片
+    // "insertVideo", // 插入视频
   ]
 };
 
 // wangEditor 配置
 const editorConfig = {
   width: '100%',
-  placeholder: '请输入内容...', //初始的提示内容
+  placeholder: defaultContent, //初始的提示内容
   MENU_CONF: {
     uploadImage: {
       server: 'https://.....',  // 图片上传接口
@@ -206,6 +214,11 @@ const handleEdit = (row) => {
 // 保存编辑
 const saveEdit = async () => {
   try {
+    //假如未填写内容，或者填写的内容与默认内容一致，则认为不需要保存
+    if (!editingReport.value.content|| editingReport.value.content === defaultContent) {
+      editDialogVisible.value = false;
+      return;
+    }
     const response = await updateReport(editingReport.value);
     if (response.data.flag) {
       // 更新成功后的操作，例如刷新列表
@@ -267,6 +280,42 @@ const formatReportName = (reportName) => {
   }
   return reportName;
 };
+
+// 处理粘贴事件，清楚粘贴内容样式，只保留文本即可
+const customPaste = (editor, event, callback) => {
+  // console.log("粘贴html：",event.clipboardData.getData('text/html'));
+  console.log("粘贴文本：",event.clipboardData.getData('text/plain'));
+  const text = event.clipboardData.getData('text/plain');
+  // console.log("粘贴rtf：",event.clipboardData.getData('text/rtf'));
+  editor.insertText(text);
+  // 阻止默认的粘贴行为
+  event.preventDefault()
+  return false;
+};
+
+// 将 HTML 转换为纯文本并保留换行
+const convertHtmlToText = (html) => {
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = html;
+  // 替换 <br> 标签为换行符
+  const textWithBreaks = tempDiv.innerHTML.replace(/<br\s*\/?>/gi, '\n');
+  // 去除其他 HTML 标签
+  const plainText = textWithBreaks.replace(/<[^>]*>/g, '');
+  return plainText;
+};
+
+// 获取上周的周报内容
+const getLastWeekReportContent = async () => {
+  try{
+    const response = await getLastWeekReports(userStore.userInfo.userId);
+    console.log("获取上周周报内容：",response.data.data);
+    if(response.data.flag){
+      editingReport.value.content = response.data.data.content;
+    }
+  }catch(error){
+    // 错误处理移至响应拦截器，此处不做处理
+  }
+};
 </script>
 
 <style scoped>
@@ -313,5 +362,9 @@ const formatReportName = (reportName) => {
 /* 设置周报内容列左对齐 */
 :deep(.el-table .left-align-content) {
   text-align: left;
+}
+
+.get-last-week-report{
+  margin-bottom: 20px;
 }
 </style>    
