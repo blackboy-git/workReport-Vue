@@ -38,8 +38,17 @@
         <div class="tab-content">
           <el-form :model="passwordInfo" ref="passwordFormRef" label-width="100px" :rules="passwordRules">
             <el-form-item label="原密码" prop="oldPassword">
-              <el-input v-model="passwordInfo.oldPassword" type="password"
-              placeholder="请输入原密码"></el-input>
+              <el-input v-model="passwordInfo.oldPassword" 
+              :type="oldPasswordVisible ? 'text' : 'password'"
+              placeholder="请输入原密码"
+              >
+                <template #suffix>
+                  <el-icon @click="oldPasswordVisible = !oldPasswordVisible">
+                    <!-- 修改为使用 Hide 和 View 图标 -->
+                    <component :is="oldPasswordVisible ? 'View' : 'Hide'"></component>
+                  </el-icon>
+                </template>
+              </el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="newPassword">
               <el-input 
@@ -86,12 +95,15 @@ import { ElMessage } from 'element-plus';
 import { useUserStore } from '../stores/user';
 import { uploadImage } from '@/api/utils';
 import { resetPasswordApi, updateUserApi } from '@/api/user';
+import CryptoJS from 'crypto-js'; // 引入 crypto-js 库
+
 
 const activeName = ref('user-info');
 const formRef = ref(null);
 const passwordFormRef = ref(null);
 const previewAvatarUrl = ref('');
 const newAvatar = ref('');
+const oldPasswordVisible = ref(false);
 const passwordVisible1 = ref(false);
 const passwordVisible2 = ref(false);
 const newFileName = ref('');
@@ -201,7 +213,10 @@ const savePassword = async () => {
   passwordFormRef.value.validate(async (valid) => {
     if (!valid) return;
     try {
-      const response = await resetPasswordApi(userStore.userInfo.userId, passwordInfo.oldPassword, passwordInfo.newPassword);
+      // 对密码进行 SHA-256 加密
+      const encryptedOldPassword = CryptoJS.SHA256(passwordInfo.oldPassword).toString();
+      const encryptedNewPassword = CryptoJS.SHA256(passwordInfo.newPassword).toString();
+      const response = await resetPasswordApi(userStore.userInfo.userId, encryptedOldPassword, encryptedNewPassword);
       if (response.data.flag) {
         ElMessage.success(response.data.msg);
       }

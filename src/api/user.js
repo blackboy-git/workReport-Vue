@@ -92,20 +92,6 @@ export async function updateUserApi(userId, userName, password,role,avatar) {
     }
 }
 
-//判断用户输入的原密码是否正确
-export async function checkPasswordApi(userId, password) {
-    try {
-        const response = await api.post('/user/checkPassword', {
-            userId,
-            password
-        });
-        return response;
-    } catch (error) {
-        console.error('判断用户输入的原密码是否正确失败:', error);
-        throw error;
-    }
-}
-
 // 删除用户 API
 export async function deleteUserApi(userId) {
     try {
