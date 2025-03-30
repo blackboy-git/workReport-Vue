@@ -109,7 +109,17 @@
   <el-dialog v-model="resetPasswordDialogVisible" title="重置密码" width="400px">
     <el-form :model="resetPasswordForm" ref="resetPasswordFormRef">
       <el-form-item label="原密码:" prop="oldPassword">
-        <el-input v-model="resetPasswordForm.oldPassword" placeholder="请输入原密码"></el-input>
+        <el-input 
+        v-model="resetPasswordForm.oldPassword"
+        :type="resetOldPasswordVisible ? 'text' : 'password'"
+        placeholder="请输入原密码"
+        >
+          <template #suffix>
+            <el-icon @click="resetOldPasswordVisible = !resetOldPasswordVisible">
+              <component :is="resetOldPasswordVisible ? 'View' : 'Hide'"></component>
+            </el-icon>
+          </template>
+        </el-input>
       </el-form-item>
       <el-form-item label="新密码:">
         <el-input
@@ -146,6 +156,7 @@ const users = ref([]);
 const addUserDialogVisible = ref(false);
 const editUserDialogVisible = ref(false);
 const resetPasswordDialogVisible = ref(false);
+const resetOldPasswordVisible = ref(false);
 const resetPasswordVisible = ref(false);
 const addUserFormRef = ref(null);
 const editUserFormRef = ref(null);
