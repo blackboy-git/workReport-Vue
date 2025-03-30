@@ -95,8 +95,8 @@ const validatePassword = (rule, value, callback) => {
 };
 
 const loginRules = reactive({
-  // userId: [{ validator: validateUserId, trigger: 'blur' }],
-  // password: [{ validator: validatePassword, trigger: 'blur' }]
+  userId: [{ validator: validateUserId, trigger: 'blur' }],
+  password: [{ validator: validatePassword, trigger: 'blur' }]
 });
 
 onMounted(() => {
