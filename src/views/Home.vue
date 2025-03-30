@@ -35,7 +35,7 @@
                   <div v-html="report.content.replace(/\n/g, '<br>')"></div>
                 </template>
                 <div class="card-content">
-                  <span>{{ convertHtmlToText(report.content) }}</span>
+                  <span>{{ convertHtmlToText(report.content  || '没有周报')}}</span>
                 </div>
               </el-tooltip>
               <template #footer>
