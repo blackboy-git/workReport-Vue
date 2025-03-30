@@ -61,6 +61,7 @@ import { User, Lock } from '@element-plus/icons-vue';
 import { useRouter } from 'vue-router';
 import {loginApi} from '../api/user';
 import { useUserStore } from '../stores/user'; // 引入 useUserStore
+import CryptoJS from 'crypto-js'; // 引入 crypto-js 库
 
 // 路由实例（应放在setup顶层）
 const router = useRouter();
@@ -119,8 +120,11 @@ const handleLogin = async () => {
         localStorage.removeItem('savedUserId');
       }
 
-      // 使用 axios 发起登录请求
-      const response = await loginApi(loginForm.userId, loginForm.password);
+      // 对密码进行 SHA-256 加密
+      const encryptedPassword = CryptoJS.SHA256(loginForm.password).toString();
+
+      // 使用 axios 发起登录请求，传递加密后的密码
+      const response = await loginApi(loginForm.userId, encryptedPassword);
 
       // 检查后端返回的响应状态
       if (response.data.flag) {

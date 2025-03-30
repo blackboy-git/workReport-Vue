@@ -140,6 +140,7 @@
 import { ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { addUserApi, updateUserApi, deleteUserApi, resetPasswordApi, getUserListApi, changeUserStatus } from '../api/user';
+import CryptoJS from 'crypto-js'; // 引入 crypto-js 库
 
 const users = ref([]);
 const addUserDialogVisible = ref(false);
@@ -217,7 +218,6 @@ const openEditUserDialog = (user) => {
   editUserDialogVisible.value = true;
   editingUser.userId = user.userId;
   editingUser.userName = user.userName;
-  editingUser.password = user.password;
   editingUser.role = user.role;
   editPasswordVisible.value = false;
 };
@@ -226,7 +226,9 @@ const addUser = async () => {
   addUserFormRef.value.validate(async (valid) => {
     if (!valid) return;
     try {
-      const response = await addUserApi(newUser.userId, newUser.userName, newUser.password, newUser.role);
+      // 对密码进行 SHA-256 加密
+      const encryptedPassword = CryptoJS.SHA256(newUser.password).toString();
+      const response = await addUserApi(newUser.userId, newUser.userName,encryptedPassword , newUser.role);
       if (response.data.flag) {
         //更新成功后的操作，刷新列表
         ElMessage.success('新增用户成功');
@@ -248,7 +250,9 @@ const updateUser = async () => {
   editUserFormRef.value.validate(async (valid) => {
     if (!valid) return;
     try {
-      const response = await updateUserApi(editingUser.userId, editingUser.userName, editingUser.password, editingUser.role,null);
+      // 对密码进行 SHA-256 加密
+      const encryptedPassword = CryptoJS.SHA256(editingUser.password).toString();
+      const response = await updateUserApi(editingUser.userId, editingUser.userName, encryptedPassword, editingUser.role,null);
       if (response.data.flag) {
         ElMessage.success('修改用户成功');
         editUserDialogVisible.value = false;
@@ -314,18 +318,21 @@ const generateRandomPassword = () => {
 // 重置密码对话框相关逻辑
 const confirmResetPassword = async () => {
   try {
-    const response = await resetPasswordApi(
-      resetPasswordForm.userId,
-      resetPasswordForm.oldPassword,
-      resetPasswordForm.newPassword
-    );
-    if (response.data.flag) {
-      ElMessage.success('重置密码成功');
-      resetPasswordDialogVisible.value = false;
-    } 
-  } catch (error) {
-    // 错误处理移至响应拦截器，此处不做处理
-  }
+      // 对密码进行 SHA-256 加密
+      const encryptedOldPassword = CryptoJS.SHA256(resetPasswordForm.oldPassword).toString();
+      const encryptedNewPassword = CryptoJS.SHA256(resetPasswordForm.newPassword).toString();
+      const response = await resetPasswordApi(
+        resetPasswordForm.userId,
+        encryptedOldPassword,
+        encryptedNewPassword
+      );
+      if (response.data.flag) {
+        ElMessage.success('重置密码成功');
+        resetPasswordDialogVisible.value = false;
+      } 
+    } catch (error) {
+      // 错误处理移至响应拦截器，此处不做处理
+    }
 };
 
 // 添加切换用户状态的方法
