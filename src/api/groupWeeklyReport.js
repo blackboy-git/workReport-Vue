@@ -47,7 +47,7 @@ export async function getGroupNames() {
 // 删除分组周报记录
 export async function deleteGroupWeeklyReport(reportId) {
     try {
-        const response = await api.delete(`/group-weekly-reports/${reportId}`);
+        const response = await api.delete(`/groupWeeklyReport/${reportId}`);
         return response;
     } catch (error) {
         console.error('删除分组周报记录失败:', error);

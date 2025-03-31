@@ -10,7 +10,7 @@
 
 ## 🌟 系统介绍
 # SmartWorkReport
-SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系统，具有周报管理的常用功能，如个人周报、组内周报、定时任务、引用上周周报数据、周报统计、打印等。
+SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系统，具有周报管理的常用功能，如个人周报、组内周报、定时任务、引用上周周报数据、周报统计、打印等，采用前后端分离设计，后端为springboot3，前端为vue3，这里是vue3，后端点击这里：
 
 ### ✨ 主要特性
 + 🤖 **功能完善** - 支持工作周报管理的常用功能；
@@ -24,9 +24,7 @@ SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系�
 ## 🌟 安装部署
 
 ### Linux 系统
-1. 下载一键式安装脚本
-2. 将SmartWorkReport压缩包放到脚本同目录下
-3. 执行脚本即可
+1. 
 
 ## 🛠️ 技术栈
 
@@ -35,7 +33,7 @@ SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系�
 | 🏗️ 框架 | 🎨 UI | 🔧 工具 |
 |:-------------:|:-------------:|:-------------:|
 | ![Springboot](https://img.shields.io/badge/Springboot-brightgreen?logo=springboot)| ![Vue.js](https://img.shields.io/badge/-Vue.js-4FC08D?style=flat-square&logo=vue.js&logoColor=white) | ![Vite](https://img.shields.io/badge/-Vite-646CFF?style=flat-square&logo=vite&logoColor=white) |
-| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) | ![Element Plus](https://img.shields.io/badge/-Element%20Plus-409EFF?style=flat-square&logo=element&logoColor=white) | ![Git](https://img.shields.io/badge/-Git-F05032?style=flat-square&logo=git&logoColor=white) |
+| ![JavaScript](https://img.shields.io/badge/-JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=black) | ![Element Plus](https://img.shields.io/badge/-Element%20Plus-409EFF?style=flat-square&logo=element&logoColor=white) | ![Security](https://img.shields.io/badge/springsecurity-brightgreen?logo=springsecurity) |
 | ![Vue Router](https://img.shields.io/badge/-Vue%20Router-42B983?style=flat-square&logo=vue.js&logoColor=white) | ![Photoshop](https://img.shields.io/badge/Photoshop-brightgreen?logo=Photoshop) | ![Gitlab](https://img.shields.io/badge/Gitlab-brightgreen?logo=Gitlab) |
 | ![Vuex](https://img.shields.io/badge/-Vuex-42B983?style=flat-square&logo=vue.js&logoColor=white) | ![Axios](https://img.shields.io/badge/Electron%20Store-brightgreen?logo=Electron%20Store) | ![Axios](https://img.shields.io/badge/Axios-brightgreen?logo=Axios) |
 
