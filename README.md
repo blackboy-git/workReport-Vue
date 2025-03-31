@@ -79,25 +79,25 @@ nohup java -jar /home/workReport/workReport.jar > /home/workReport/workReport-lo
 
 ## 🌟 系统效果
 1. 登录页面
-![alt text](image.png)
+![alt text](/src/assets/images/image.png)
 2. 首页
-![alt text](image-1.png)
+![alt text](/src/assets/images/image-1.png)
 3. 我的周报
-![alt text](image-2.png)
+![alt text](/src/assets/images/image-2.png)
 4. 组内周报
-![alt text](image-9.png)
+![alt text](/src/assets/images/image-9.png)
 5. 组内周报明细
-![alt text](image-4.png)
+![alt text](/src/assets/images/image-4.png)
 6. 个人设置
-![alt text](image-5.png)
+![alt text](/src/assets/images/image-5.png)
 7. 用户管理
-![alt text](image-6.png)
+![alt text](/src/assets/images/image-6.png)
 8. 分组管理
-![alt text](image-7.png)
+![alt text](/src/assets/images/image-7.png)
 9. 分组周报定时计划配置
-![alt text](image-8.png)
+![alt text](/src/assets/images/image-8.png)
 10. 周报开放日期允许编辑
-![alt text](image-3.png)
+![alt text](/src/assets/images/image-3.png)
 
 ## 🤝 参与贡献
 欢迎参与项目贡献！
