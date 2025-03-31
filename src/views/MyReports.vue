@@ -41,8 +41,9 @@
       <el-table-column prop="userName" label="用户姓名" width="120px" />
       <el-table-column label="操作" width="150px">
         <template #default="scope">
-          <el-button size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
-          <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+          <!-- 根据 canEdit 函数结果决定按钮是否显示 -->
+          <el-button v-if="scope.row.canEdit" size="small" type="primary" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button v-if="scope.row.canEdit" size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -88,6 +89,9 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
 const userStore = useUserStore();
 
+// 假设管理员角色名为 'admin'
+const isAdmin = computed(() => userStore.userInfo.role === 'ADMIN');
+
 //定义默认模板
 const defaultContent=`<p>本周已完成工作：<br>
 1. <br>
@@ -116,7 +120,7 @@ const reports = ref([]);
 // 筛选后的周报数据
 const filteredReports = computed(() => {
   return reports.value.filter(report => {
-    const reportYear = new Date(report.createTime).getFullYear();
+    const reportYear = new Date(report.createTime.replace(' ', 'T')).getFullYear();
     return reportYear === selectedYear.value;
   });
 });
@@ -180,22 +184,42 @@ const editorConfig = {
   }
 };
 
-// 组件挂载时获取数据
-onMounted(async () => {
+// 封装处理周报数据的函数
+const processReports = (data) => {
+  return data.map(report => {
+    const canEdit = (() => {
+      if (isAdmin.value) {
+        return true;
+      }
+      const createDate = new Date(report.createTime.replace(' ', 'T')).getTime();
+      const openDays = report.allowDays || 0;
+      const endDate = createDate + openDays * 24 * 60 * 60 * 1000;
+      const currentDate = new Date().getTime();
+      return currentDate >= createDate && currentDate <= endDate;
+    })();
+    return {
+      ...report,
+      canEdit
+    };
+  });
+};
+
+// 封装获取周报数据的方法
+const fetchReports = async () => {
   try {
     const userId = userStore.userInfo.userId; 
     const response = await getMyAllReports(userId);
     if (response.data.flag) {
-      const processedReports = response.data.data.map(report => {
-        return {
-          ...report
-        };
-      });
-      reports.value = processedReports; 
+      reports.value = processReports(response.data.data);
     }
   } catch (error) {
     // 错误处理移至响应拦截器，此处不做处理
   }
+};
+
+// 组件挂载时获取数据
+onMounted(async () => {
+  await fetchReports();
 });
 
 //组件销毁时同时销毁编辑器实例防止内存泄漏
@@ -207,8 +231,8 @@ onBeforeUnmount(() => {
 
 // 编辑周报
 const handleEdit = (row) => {
-  editingReport.value = { ...row };
-  editDialogVisible.value = true;
+    editingReport.value = { ...row };
+    editDialogVisible.value = true;
 };
 
 // 保存编辑
@@ -225,10 +249,7 @@ const saveEdit = async () => {
       ElMessage.success('周报修改成功！');
       editDialogVisible.value = false;
       // 重新获取周报数据
-      const newResponse = await getMyAllReports(userStore.userInfo.userId);
-      if (newResponse.data.flag) {
-        reports.value = newResponse.data.data;
-      }
+      await fetchReports();
     }
   } catch (error) {
     // 错误处理移至响应拦截器，此处不做处理

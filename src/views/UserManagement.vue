@@ -194,7 +194,7 @@ const userRules = reactive({
     {
       validator: (rule, value, callback) => {
         // 修改后的正则表达式，允许密码包含特殊字符
-        const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+        const reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@#$!%*?&]{8,}$/;
         if (!reg.test(value)) {
           return callback(new Error('密码需 8 位以上且包含字母和数字'));
         }

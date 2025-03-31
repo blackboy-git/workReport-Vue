@@ -96,6 +96,8 @@ nohup java -jar /home/workReport/workReport.jar > /home/workReport/workReport-lo
 ![alt text](image-7.png)
 9. 分组周报定时计划配置
 ![alt text](image-8.png)
+10. 周报开放日期允许编辑
+![alt text](image-3.png)
 
 ## 🤝 参与贡献
 欢迎参与项目贡献！
