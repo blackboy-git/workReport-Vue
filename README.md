@@ -10,7 +10,7 @@
 
 ## 🌟 系统介绍
 # SmartWorkReport
-SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系统，具有周报管理的常用功能，如个人周报、组内周报、定时任务、引用上周周报数据、周报统计、打印等，采用前后端分离设计，后端为springboot3，前端为vue3，这里是vue3，后端点击这里：
+SmartWorkReport 是一款我首次尝试采用LLM辅助开发的工作周报系统，具有周报管理的常用功能，如个人周报、组内周报、定时任务、引用上周周报数据、周报统计、打印等，采用前后端分离设计，后端为springboot3，前端为vue3，这里是vue3，后端点击这里：https://github.com/blackboy-git/workReport.git
 
 ### ✨ 主要特性
 + 🤖 **功能完善** - 支持工作周报管理的常用功能；
