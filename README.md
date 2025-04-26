@@ -78,7 +78,7 @@ nohup java -jar /home/workReport/workReport.jar > /home/workReport/workReport-lo
     - bcrypt - 密码加密库
 
 ## 🌟 系统效果
-1. 登录页面
+1. 登录页面1
 ![alt text](/src/assets/images/image.png)
 2. 首页
 ![alt text](/src/assets/images/image-1.png)
