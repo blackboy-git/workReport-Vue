@@ -149,3 +149,17 @@ export async function getUserAvatar(avatarId) {
         throw error;
     }
 }    
+
+//修改用户头像api
+export async function updateUserAvatar(userId, avatarName) {
+    try {
+        const response = await api.put('/user/updateAvatar', {
+            userId,
+            avatarName
+        });
+        return response;
+    } catch (error) {
+        console.error('修改用户头像失败:', error);
+        throw error;
+    }
+}

@@ -94,7 +94,7 @@ import { ref, onMounted, reactive } from 'vue';
 import { ElMessage } from 'element-plus';
 import { useUserStore } from '../stores/user';
 import { uploadImage } from '@/api/utils';
-import { resetPasswordApi, updateUserApi } from '@/api/user';
+import { resetPasswordApi, updateUserAvatar } from '@/api/user';
 import CryptoJS from 'crypto-js'; // 引入 crypto-js 库
 
 
@@ -197,10 +197,10 @@ const submitForm = async () => {
   formRef.value.validate(async (valid) => {
     if (!valid) return;
     try {
-      const response = await updateUserApi(userStore.userInfo.userId, formData.newUserName, '', '', newFileName.value);
+      console.log('头像名称是：' + newFileName.value);
+      const response = await updateUserAvatar(userStore.userInfo.userId, newFileName.value);
       if (response.data.flag) {
         //更新userStore中用户姓名
-        userStore.userInfo.userName = formData.newUserName;
         ElMessage.success(response.data.msg);
       }
     } catch (error) {
